@@ -1,0 +1,98 @@
+---
+title: "Coffee Tasting"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Packages
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(reshape)
+library(reshape2)
+library(RColorBrewer)
+library(GGally)
+library(scales)
+library(memisc)
+library(tidyr)
+```
+
+## Load the Data
+```{r echo=TRUE, load_data}
+ct <- read.csv('/Users/aehsaei/Documents/DataAnalyst/CoffeeTasting/CoffeeTasting.csv', 
+               row.names = NULL)
+```
+
+## Description
+There are many different types of methods to brew coffee. Here are five 
+different methods that were used in this test.
+
+#### Pourover
+* Pourover coffee starts with (freshly) ground coffee, a filter, and a filter 
+holder, often called a 'pourover dripper.' At the most basic level, pourover 
+brewing involves pouring water over and through the grounds to extract the 
+coffee flavors into your cup or serving vessel.
+
+#### Chemex
+* The Chemex Coffeemaker is a manual, pour-over style glass-container coffeemaker 
+that Peter Schlumbohm invented in 1941. The Chemex Coffeemaker 
+consists of an hourglass-shaped glass flask with a conical funnel-like neck 
+(rather than the cylindrical neck of an Erlenmeyer flask) and uses proprietary 
+filters, made of bonded paper (thicker-gauge paper than the standard paper 
+filters for a drip-method coffeemaker) that removes most of the coffee oils, 
+brewing coffee with a taste that is different than coffee brewed in other 
+coffee-making systems; also, the thicker paper of the Chemex coffee filters may 
+assist in removing cafestol, a cholesterol-containing compound found in coffee 
+oils.
+
+#### French Press
+* A French press, also known as a cafetière, сafetière à piston, Cafeteria, press 
+pot, coffee press, or coffee plunger, is a coffee brewing device patented by 
+Italian designer Attilio Calimani in 1929. Coffee is brewed by placing the ground coffee in the empty beaker and adding hot (93-96 degrees Celsius, 200-205 degrees Fahrenheit) water, in proportions of about 30 grams (1 ounce) of coffee grounds to 500 ml (15 fluid ounces) of water, more or less to taste. The brewing time is about two to four minutes. The plunger is pressed to separate the grounds and hold them at the bottom of the beaker. 
+
+#### Tammy Machine
+* A mysterious ancient device that uses magic to extract coffee from coffee beans.
+
+#### Miele
+* A built-in coffee machine with bean-to cup system.
+
+## Blind Study
+We conducted a blind study on 11 participants to determine the most preferred 
+coffee brewing method. Each participant was given a coffee by Counter Culture
+brand coffee named "La Golondrina" that was brewed 5 different ways as described
+above. A 6th brew method was added for comparison that was not the same coffee
+and was purchased from Starbucks using Starbucks coffee.
+
+Each participant tried all 6 samples of coffee and rated each based on a 1-5
+taste scale. The least preferred taste was a score of 1 and the highest 
+preferred taste score was a score of 5.
+
+## Analyze Results
+```{r echo=TRUE, analyze_results}
+summary(ct)
+
+ct.avg <- ct %>%
+  group_by(Coffee) %>%
+  summarise(Average.Taste.Score = mean(Taste.Score))
+
+ct.avg
+```
+
+## Plot Results
+```{r echo=TRUE, plot_results}
+ggplot(data = ct.avg, aes(x = Coffee, y = Average.Taste.Score)) +
+  geom_bar(stat = "identity", aes(fill = Coffee))
+```
+
+## Results
+The most preferred brew method was the Miele machine. Here is the ranking in 
+order of most to least preferred.
+
+```{r echo=FALSE, ranking}
+ct.avg %>%
+  arrange(desc(Average.Taste.Score))
+```
